@@ -66,10 +66,10 @@ if [ -f "data.json" ]; then
 else
   echo ""
   echo "TF refresh..."
-  terraform refresh -var-file=sddc.json -var-file=ip.json -no-color
+  terraform refresh -var-file=sddc.json -var-file=ip.json -var-file=EasyAviLocation.json -no-color
   echo ""
   echo "TF destroy..."
-  terraform destroy -auto-approve -var-file=sddc.json -var-file=ip.json -no-color
+  terraform destroy -auto-approve -var-file=sddc.json -var-file=ip.json -var-file=EasyAviLocation.json -no-color
 fi
 #echo ""
 #echo "Removing easyavi.ran"
