@@ -13,7 +13,7 @@ output "httpVsPublicIP" {
 }
 
 output "httpVsPrivateIP" {
-  value = var.no_access_vcenter.application ? [cidrhost(var.no_access_vcenter.network_vip.defaultGateway, var.no_access_vcenter.network_vip.ipStartPool)] : null
+  value = var.no_access_vcenter.application ? [var.no_access_vcenter.network_vip.ipStartPool] : null
 }
 
 output "dnsVsPublicIP" {
@@ -21,7 +21,7 @@ output "dnsVsPublicIP" {
 }
 
 output "dnsVsPrivateIP" {
-  value = var.no_access_vcenter.application ? [cidrhost(var.no_access_vcenter.network_vip.defaultGateway, var.no_access_vcenter.network_vip.ipStartPool + length(var.no_access_vcenter.virtualservices.http))] : null
+  value = var.no_access_vcenter.application ? [var.no_access_vcenter.network_vip.ipEndPool] : null
 }
 
 output "aviUsername" {

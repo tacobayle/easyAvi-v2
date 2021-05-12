@@ -8,7 +8,7 @@ resource "nsxt_policy_nat_rule" "dnat_vsHttp" {
   action               = "DNAT"
   source_networks      = []
   destination_networks = [vmc_public_ip.public_ip_vsHttp[count.index].ip]
-  translated_networks  = [cidrhost(var.no_access_vcenter.network_vip.defaultGateway, var.no_access_vcenter.network_vip.ipStartPool + count.index)]
+  translated_networks  = [var.no_access_vcenter.network_vip.ipStartPool]
   gateway_path         = "/infra/tier-1s/cgw"
   logging              = false
   firewall_match       = "MATCH_INTERNAL_ADDRESS"
@@ -21,7 +21,7 @@ resource "nsxt_policy_nat_rule" "dnat_vsDns" {
   action               = "DNAT"
   source_networks      = []
   destination_networks = [vmc_public_ip.public_ip_vsDns[count.index].ip]
-  translated_networks  = [cidrhost(var.no_access_vcenter.network_vip.defaultGateway, var.no_access_vcenter.network_vip.ipStartPool + length(var.no_access_vcenter.virtualservices.http) + count.index)]
+  translated_networks  = [var.no_access_vcenter.network_vip.ipEndPool]
   gateway_path         = "/infra/tier-1s/cgw"
   logging              = false
   firewall_match       = "MATCH_INTERNAL_ADDRESS"
@@ -93,7 +93,7 @@ resource "nsxt_policy_group" "vsHttp" {
   description  = "EasyAvi-VS-HTTP"
   criteria {
     ipaddress_expression {
-      ip_addresses = [vmc_public_ip.public_ip_vsHttp[count.index].ip, cidrhost(var.no_access_vcenter.network_vip.defaultGateway, var.no_access_vcenter.network_vip.ipStartPool + count.index)]
+      ip_addresses = [vmc_public_ip.public_ip_vsHttp[count.index].ip, var.no_access_vcenter.network_vip.ipStartPool + count.index]
     }
   }
 }
@@ -106,7 +106,7 @@ resource "nsxt_policy_group" "vsDns" {
   description  = "EasyAvi-VS-DNS"
   criteria {
     ipaddress_expression {
-      ip_addresses = [vmc_public_ip.public_ip_vsDns[count.index].ip, cidrhost(var.no_access_vcenter.network_vip.defaultGateway, var.no_access_vcenter.network_vip.ipStartPool + length(var.no_access_vcenter.virtualservices.http) + count.index)]
+      ip_addresses = [vmc_public_ip.public_ip_vsDns[count.index].ip, var.no_access_vcenter.network_vip.ipEndPool]
     }
   }
 }

@@ -14,7 +14,7 @@ data "template_file" "backend_userdata" {
     url_demovip_server = var.backend.url_demovip_server
     username = var.backend.username
     defaultGw          = split("/", var.no_access_vcenter.network_backend.defaultGateway)[0]
-    ip                 = cidrhost(var.no_access_vcenter.network_backend.defaultGateway, element(var.no_access_vcenter.network_backend.backend_ips, count.index))
+    ip                 = var.no_access_vcenter.network_backend.backend_ips[count.index]
     mask               = split("/", var.no_access_vcenter.network_backend.defaultGateway)[1]
     netplanFile        = var.backend.netplanFile
     dns                = var.no_access_vcenter.network_backend.dns
