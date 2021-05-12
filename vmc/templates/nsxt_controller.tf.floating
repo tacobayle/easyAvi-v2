@@ -4,7 +4,7 @@ resource "nsxt_policy_nat_rule" "dnat_controller" {
   action               = "DNAT"
   source_networks      = []
   destination_networks = [vmc_public_ip.public_ip_controller[count.index].ip]
-  translated_networks  = var.no_access_vcenter.network_management.avi_ctrl_floating_ip
+  translated_networks  = [var.no_access_vcenter.network_management.avi_ctrl_floating_ip]
   gateway_path         = "/infra/tier-1s/cgw"
   logging              = false
   firewall_match       = "MATCH_INTERNAL_ADDRESS"
