@@ -21,7 +21,7 @@ output "dnsVsPublicIP" {
 }
 
 output "dnsVsPrivateIP" {
-  value = var.no_access_vcenter.application ? ["${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[0]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[1]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[2]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[3] + 1}"] : null
+  value = var.no_access_vcenter.application ? ["${split(".", var.no_access_vcenter.network_vip.ipStartPool)[0]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[1]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[2]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[3] + 1}"] : null
 }
 
 output "aviUsername" {

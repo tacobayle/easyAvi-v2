@@ -21,7 +21,7 @@ resource "nsxt_policy_nat_rule" "dnat_vsDns" {
   action               = "DNAT"
   source_networks      = []
   destination_networks = [vmc_public_ip.public_ip_vsDns[count.index].ip]
-  translated_networks  = ["${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[0]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[1]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[2]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[3] + 1}"]
+  translated_networks  = ["${split(".", var.no_access_vcenter.network_vip.ipStartPool)[0]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[1]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[2]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[3] + 1}"]
   gateway_path         = "/infra/tier-1s/cgw"
   logging              = false
   firewall_match       = "MATCH_INTERNAL_ADDRESS"
@@ -106,7 +106,7 @@ resource "nsxt_policy_group" "vsDns" {
   description  = "EasyAvi-VS-DNS"
   criteria {
     ipaddress_expression {
-      ip_addresses = [vmc_public_ip.public_ip_vsDns[count.index].ip, "${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[0]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[1]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[2]}.${split(".", "var.no_access_vcenter.network_vip.ipStartPool")[3] + 1}"]
+      ip_addresses = [vmc_public_ip.public_ip_vsDns[count.index].ip, "${split(".", var.no_access_vcenter.network_vip.ipStartPool)[0]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[1]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[2]}.${split(".", var.no_access_vcenter.network_vip.ipStartPool)[3] + 1}"]
     }
   }
 }
