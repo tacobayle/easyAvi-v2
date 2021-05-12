@@ -58,7 +58,6 @@
         internal_profile:
           dns_service_domain:
             - domain_name: "{{ item.name }}"
-#              num_dns_ip: 1
               pass_through: true
               record_ttl: 100
           ttl: 300
@@ -250,22 +249,6 @@
         - no_access_vcenter.name is defined
         - no_access_vcenter.application is true
 
-#    - name: Debug default gateway
-#      debug:
-#        msg: "{{ no_access_vcenter.network_vip.defaultGateway }}"
-#      when:
-#        - no_access_vcenter.name is defined
-#        - no_access_vcenter.network_vip.defaultGateway
-#        - no_access_vcenter.network_vip.defaultGatewaySe is true
-
-#    - name: Debug default gateway
-#      debug:
-#        msg: "{{ no_access_vcenter.network_vip.defaultGateway | ipv4('address') }}"
-#      when:
-#        - no_access_vcenter.name is defined
-#        - no_access_vcenter.network_vip.defaultGateway
-#        - no_access_vcenter.network_vip.defaultGatewaySe is true
-
     - name: Update vrf global with default route for each se group - no_access_vcenter
       avi_vrfcontext:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
@@ -430,10 +413,6 @@
 
     - set_fact:
         se_image_path: "{{ hostvars['localhost']['se_image_path'] }}"
-
-#    - name: Debug
-#      debug:
-#        msg: "{{ se_image_path }}"
 
     - name: Download SE image
       fetch:
