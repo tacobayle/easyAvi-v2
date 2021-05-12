@@ -100,7 +100,7 @@
         name: cluster-0-1
         uuid: "{{ cluster_uuid }}"
         virtual_ip:
-            addr: "{{ controllerDefaultGateway | ipaddr(controllerFloatingIp) | ipv4('address') }}"
+            addr: "{{ controllerFloatingIp }}"
             type: V4
       when:
         - controller.cluster is true
