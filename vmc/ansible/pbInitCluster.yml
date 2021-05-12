@@ -106,7 +106,6 @@
         - controller.cluster is true
         - controller.floating_ip is true
         - controller.environment == "VMWARE"
-        - controllerDefaultGateway is defined
         - controllerFloatingIp is defined
         - cluster_uuid is defined
       tags:

@@ -137,37 +137,37 @@
       tags:
         - cloud
 
-    - name: Define Network Range IP Begin - no_access_vcenter
-      set_fact:
-        ipBegin: "{{ no_access_vcenter.network_vip.defaultGateway | ipaddr(no_access_vcenter.network_vip.ipStartPool) }}"
-      when:
-        - no_access_vcenter.network_vip.defaultGateway is defined
-        - no_access_vcenter.network_vip.ipStartPool is defined
-        - no_access_vcenter.application is true
-
-    - name: Define Network Range IP Begin - no_access_vcenter
-      set_fact:
-        ipBegin: "{{ ipBegin.split('/')[0] }}"
-      when:
-        - no_access_vcenter.network_vip.defaultGateway is defined
-        - no_access_vcenter.network_vip.ipStartPool is defined
-        - no_access_vcenter.application is true
-
-    - name: Define Network Range IP End - no_access_vcenter
-      set_fact:
-        ipEnd: "{{ no_access_vcenter.network_vip.defaultGateway | ipaddr(no_access_vcenter.network_vip.ipEndPool) }}"
-      when:
-        - no_access_vcenter.network_vip.defaultGateway is defined
-        - no_access_vcenter.network_vip.ipEndPool is defined
-        - no_access_vcenter.application is true
-
-    - name: Define Network Range IP End - no_access_vcenter
-      set_fact:
-        ipEnd: "{{ ipEnd.split('/')[0] }}"
-      when:
-        - no_access_vcenter.network_vip.defaultGateway is defined
-        - no_access_vcenter.network_vip.ipEndPool is defined
-        - no_access_vcenter.application is true
+#    - name: Define Network Range IP Begin - no_access_vcenter
+#      set_fact:
+#        ipBegin: "{{ no_access_vcenter.network_vip.defaultGateway | ipaddr(no_access_vcenter.network_vip.ipStartPool) }}"
+#      when:
+#        - no_access_vcenter.network_vip.defaultGateway is defined
+#        - no_access_vcenter.network_vip.ipStartPool is defined
+#        - no_access_vcenter.application is true
+#
+#    - name: Define Network Range IP Begin - no_access_vcenter
+#      set_fact:
+#        ipBegin: "{{ ipBegin.split('/')[0] }}"
+#      when:
+#        - no_access_vcenter.network_vip.defaultGateway is defined
+#        - no_access_vcenter.network_vip.ipStartPool is defined
+#        - no_access_vcenter.application is true
+#
+#    - name: Define Network Range IP End - no_access_vcenter
+#      set_fact:
+#        ipEnd: "{{ no_access_vcenter.network_vip.defaultGateway | ipaddr(no_access_vcenter.network_vip.ipEndPool) }}"
+#      when:
+#        - no_access_vcenter.network_vip.defaultGateway is defined
+#        - no_access_vcenter.network_vip.ipEndPool is defined
+#        - no_access_vcenter.application is true
+#
+#    - name: Define Network Range IP End - no_access_vcenter
+#      set_fact:
+#        ipEnd: "{{ ipEnd.split('/')[0] }}"
+#      when:
+#        - no_access_vcenter.network_vip.defaultGateway is defined
+#        - no_access_vcenter.network_vip.ipEndPool is defined
+#        - no_access_vcenter.application is true
 
 
     - name: Define configured_subnets for network - no_access_vcenter
@@ -182,15 +182,15 @@
               - range:
                   begin:
                     type: "{{ no_access_vcenter.network_vip.type | default('V4') }}"
-                    addr: "{{ ipBegin }}"
+                    addr: "{{ no_access_vcenter.network_vip.ipStartPool }}"
                   end:
                     type: "{{ no_access_vcenter.network_vip.type | default('V4') }}"
-                    addr: "{{ ipEnd }}"
+                    addr: "{{ no_access_vcenter.network_vip.ipEndPool }}"
       when:
-        - ipBegin is defined
-        - ipEnd is defined
         - no_access_vcenter.network_vip.defaultGateway is defined
         - no_access_vcenter.application is true
+        - no_access_vcenter.network_vip.ipStartPool is defined
+        - no_access_vcenter.network_vip.ipEndPool is defined
 
     - name: Create Network for IPAM - no_access_vcenter
       avi_network:
