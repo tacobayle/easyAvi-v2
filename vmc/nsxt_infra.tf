@@ -93,7 +93,7 @@ resource "nsxt_policy_group" "vsHttp" {
   description  = "EasyAvi-VS-HTTP"
   criteria {
     ipaddress_expression {
-      ip_addresses = [vmc_public_ip.public_ip_vsHttp[count.index].ip, var.no_access_vcenter.network_vip.ipStartPool + count.index]
+      ip_addresses = [vmc_public_ip.public_ip_vsHttp[count.index].ip, var.no_access_vcenter.network_vip.ipStartPool]
     }
   }
 }
