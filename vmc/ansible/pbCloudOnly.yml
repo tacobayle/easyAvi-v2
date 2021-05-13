@@ -317,6 +317,7 @@
             value: "{{ item.name }}"
         ha_mode: "{{ item.ha_mode | default('HA_MODE_SHARED') }}"
         min_scaleout_per_vs: 2
+        buffer_se: 0
         extra_shared_config_memory: "{{ item.extra_shared_config_memory | default(omit) }}"
         vcenter_folder: "{{ item.vcenter_folder | default(omit) }}"
         se_tunnel_mode: "{{ se_tunnel_mode }}"
