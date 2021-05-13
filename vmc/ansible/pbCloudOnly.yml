@@ -298,6 +298,13 @@
       when:
         - no_access_vcenter.nsxt_exclusion_list is false
 
+#    - name: Define list min_scaleout_per_vs
+#      set_fact:
+#        min_scaleout_per_vs: "{{ min_scaleout_per_vs | default([]) + ['2' | default('2') ] }}"
+#      loop: "{{ no_access_vcenter.serviceEngineGroup }}"
+#      when:
+#        - no_access_vcenter.serviceEngineGroup is defined
+
     - name: Modify/Creating SE group - no_access_vcenter
       avi_serviceenginegroup:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
@@ -309,8 +316,8 @@
           - key: EasyAvi
             value: "{{ item.name }}"
         ha_mode: "{{ item.ha_mode | default('HA_MODE_SHARED') }}"
-        min_scaleout_per_vs: "{{ item.min_scaleout_per_vs | default(omit) }}"
-        buffer_se: "{{ item.buffer_se | default(omit) }}"
+        min_scaleout_per_vs: 2
+        buffer_se: 0
         extra_shared_config_memory: "{{ item.extra_shared_config_memory | default(omit) }}"
         vcenter_folder: "{{ item.vcenter_folder | default(omit) }}"
         se_tunnel_mode: "{{ se_tunnel_mode }}"
