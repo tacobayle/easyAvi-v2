@@ -35,7 +35,11 @@
       until: "result.content.find('CLUSTER_UP') != -1"
       retries: 30
       delay: 30
-
+      when:
+        - controller.cluster is true
+        - controller.environment == "VMWARE"
+      tags:
+        - cluster
 
     - name: Wait for the Controller cluster to finish - if cluster has been configured
       avi_api_session:
