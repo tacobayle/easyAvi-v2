@@ -49,10 +49,10 @@ echo ""
 echo "++++++++++++++++++++++++++++++++"
 echo "removing $(cat sddc.json | jq -r .no_access_vcenter.EasyAviSeExclusionList) from exclusion list"
 python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-exclude-list $(cat sddc.json | jq -r .no_access_vcenter.EasyAviSeExclusionList)
-echo ""
-echo "++++++++++++++++++++++++++++++++"
-echo "removing $(cat sddc.json | jq -r .no_access_vcenter.EasyAviControllerExclusionList) from exclusion list"
-python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-exclude-list $(cat sddc.json | jq -r .no_access_vcenter.EasyAviControllerExclusionList)
+#echo ""
+#echo "++++++++++++++++++++++++++++++++"
+#echo "removing $(cat sddc.json | jq -r .no_access_vcenter.EasyAviControllerExclusionList) from exclusion list"
+#python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-exclude-list $(cat sddc.json | jq -r .no_access_vcenter.EasyAviControllerExclusionList)
 #
 # TF Refresh, destroy.
 #
