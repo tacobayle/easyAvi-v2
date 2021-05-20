@@ -63,29 +63,6 @@ resource "null_resource" "se_exclusion_list" {
   }
 }
 
-resource "nsxt_policy_group" "management" {
-  display_name = "EasyAvi-Management-Network"
-  domain       = "cgw"
-  description  = "EasyAvi-Management-Network"
-  criteria {
-    ipaddress_expression {
-      ip_addresses = ["${cidrhost(var.no_access_vcenter.network_management.defaultGateway, "0")}/${split("/", var.no_access_vcenter.network_management.defaultGateway)[1]}"]
-    }
-  }
-}
-
-resource "nsxt_policy_group" "backend" {
-  count = (var.no_access_vcenter.application == true ? 1 : 0)
-  display_name = "EasyAvi-Backend-Servers"
-  domain       = "cgw"
-  description  = "EasyAvi-Backend-Servers"
-  criteria {
-    ipaddress_expression {
-      ip_addresses = ["${cidrhost(var.no_access_vcenter.network_backend.defaultGateway, "0")}/${split("/", var.no_access_vcenter.network_backend.defaultGateway)[1]}"]
-    }
-  }
-}
-
 resource "nsxt_policy_group" "vsHttp" {
   count = (var.no_access_vcenter.dfw_rules == true ? 1 : 0)
   display_name = "EasyAvi-VS-HTTP"
@@ -129,19 +106,6 @@ resource "null_resource" "cgw_vsDns_create" {
   count = (var.no_access_vcenter.dfw_rules == true ? 1 : 0)
   provisioner "local-exec" {
     command = "python3 python/pyVMC.py ${var.vmc_nsx_token} ${var.vmc_org_id} ${var.vmc_sddc_id} new-cgw-rule easyavi_inbound_vsDns any ${nsxt_policy_group.vsDns[count.index].id} DNS ALLOW public 0"
-  }
-}
-
-resource "null_resource" "cgw_outbound_management_create" {
-  provisioner "local-exec" {
-    command = "python3 python/pyVMC.py ${var.vmc_nsx_token} ${var.vmc_org_id} ${var.vmc_sddc_id} new-cgw-rule easyavi_management_outbound ${nsxt_policy_group.management.id} any any ALLOW public 0"
-  }
-}
-
-resource "null_resource" "cgw_outbound_backend_create" {
-  count = (var.no_access_vcenter.application == true ? 1 : 0)
-  provisioner "local-exec" {
-    command = "python3 python/pyVMC.py ${var.vmc_nsx_token} ${var.vmc_org_id} ${var.vmc_sddc_id} new-cgw-rule easyavi_backend_outbound ${nsxt_policy_group.backend[0].id} any any ALLOW public 0"
   }
 }
 
