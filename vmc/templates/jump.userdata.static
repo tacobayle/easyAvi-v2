@@ -15,7 +15,6 @@ write_files:
       mac=`ip -o link show $iface | awk -F'link/ether ' '{print $2}' | awk -F' ' '{print $1}'`
       hostname=`hostname`
       echo "${ip} $hostname" | sudo tee -a /etc/hosts
-      echo "${vCenterIp} ${vCenterFqdn}" | sudo tee -a /etc/hosts
       cp ${netplanFile} ${netplanFile}.old
       echo "network:" | sudo tee ${netplanFile}
       echo "    ethernets:" | sudo tee -a ${netplanFile}
@@ -30,6 +29,7 @@ write_files:
       echo "              addresses: [${dns}]" | sudo tee -a ${netplanFile}
       echo "    version: 2" | sudo tee -a ${netplanFile}
       sudo netplan apply
+      echo "${vCenterIp} ${vCenterFqdn}" | sudo tee -a /etc/hosts
       echo "cloud init done" | tee /tmp/cloudInitDone.log
     path: /opt/bootstrap.sh
     permissions: 0755
