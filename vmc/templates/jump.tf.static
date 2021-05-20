@@ -10,6 +10,8 @@ data "template_file" "jumpbox_userdata" {
     defaultGw = split("/", var.no_access_vcenter.network_management.defaultGateway)[0]
     netplanFile = var.jump.netplanFile
     dns = var.no_access_vcenter.network_management.dns
+    vCenterIp = var.vCenterIp
+    vCenterFqdn = var.vmc_vsphere_server
   }
 }
 

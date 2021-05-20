@@ -5,6 +5,8 @@ data "template_file" "jumpbox_userdata" {
     aviSdkVersion = var.jump.aviSdkVersion
     ansibleVersion = var.ansible.version
     username = var.jump.username
+    vCenterIp = var.vCenterIp
+    vCenterFqdn = var.vmc_vsphere_server
   }
 }
 
