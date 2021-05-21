@@ -19,10 +19,10 @@ fi
 #
 #
 #
-echo ""
-echo "++++++++++++++++++++++++++++++++"
-echo "Checking for IP of vCenter..."
-echo "{\"vCenterIp\": \"$(dig echo $(cat $credsFile | jq -r .vmc_vsphere_server) +short)\"}" | tee vCenterIp.json
+#echo ""
+#echo "++++++++++++++++++++++++++++++++"
+#echo "Checking for IP of vCenter..."
+#echo "{\"vCenterIp\": \"$(dig echo $(cat $credsFile | jq -r .vmc_vsphere_server) +short)\"}" | tee vCenterIp.json
 #
 #
 #

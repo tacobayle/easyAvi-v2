@@ -11,7 +11,6 @@ users:
 write_files:
   - content: |
       #!/bin/bash
-      echo "${vCenterIp} ${vCenterFqdn}" | sudo tee -a /etc/hosts
       echo "cloud init done" | tee /tmp/cloudInitDone.log
     path: /opt/bootstrap.sh
     permissions: 0755
