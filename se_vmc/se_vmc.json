@@ -8,7 +8,7 @@
       "dc": "SDDC-Datacenter",
       "cluster": "Cluster-1",
       "datastore": "WorkloadDatastore",
-      "resource_pool": "Cluster-1/Resources",
+      "resource_pool": "Cluster-1/Resources"
     },
     "serviceEngineGroup": [
       {

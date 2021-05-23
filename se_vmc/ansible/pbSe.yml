@@ -97,8 +97,6 @@
         - avi_username is defined
         - se_master_ctl_version is defined
 
-
-
     - name:  Generate SE image on controller
       avi_api_session:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
@@ -128,9 +126,20 @@
         validate_checksum: False
 
 
-    - name: Define ova path (in controller variable)
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  roles:
+    - role: "avinetworks.avisdk"
+
+  tasks:
+
+    - name: Define ova path (in localhost variable)
       set_fact:
         ova_path: "./se.ova"
+      when:
+        - no_access_vcenter.name is defined
 
     - name: Get Clouds list
       avi_api_session:
@@ -141,7 +150,7 @@
       register: cloudResults
       ignore_errors: yes
 
-    - name: Define ova path (in localhost variable)
+    - name: Define cloud uuid (in localhost variable)
       set_fact:
         cloud_no_access_vcenter_uuid: "{{ item.uuid }}"
       loop: "{{ cloudResults.obj.results }}"
