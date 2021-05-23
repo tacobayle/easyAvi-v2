@@ -29,8 +29,7 @@ resource "vsphere_virtual_machine" "backend" {
 
   num_cpus = var.backend["cpu"]
   memory = var.backend["memory"]
-  #wait_for_guest_net_timeout = var.backend["wait_for_guest_net_timeout"]
-  wait_for_guest_net_routable = var.backend["wait_for_guest_net_routable"]
+  wait_for_guest_net_timeout = var.backend["wait_for_guest_net_timeout"]
   guest_id = "guestid-backend-${count.index}"
 
   disk {

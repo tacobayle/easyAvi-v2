@@ -29,7 +29,7 @@ variable "jump" {
     disk = 20
     public_key_path = "~/.ssh/id_rsa.pub"
     private_key_path = "~/.ssh/id_rsa"
-    wait_for_guest_net_timeout = 2
+    wait_for_guest_net_timeout = 5
     template_name = "ubuntu-bionic-18.04-cloudimg-template"
     aviSdkVersion = "18.2.9"
     username = "ubuntu"
@@ -50,7 +50,7 @@ variable "backend" {
     cpu = 2
     memory = 4096
     disk = 20
-    wait_for_guest_net_routable = "false"
+    wait_for_guest_net_timeout = 5
     template_name = "ubuntu-bionic-18.04-cloudimg-template"
     url_demovip_server = "https://github.com/tacobayle/demovip_server"
     username = "ubuntu"

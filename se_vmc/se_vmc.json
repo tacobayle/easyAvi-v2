@@ -1,0 +1,57 @@
+{
+  "no_access_vcenter": {
+    "name": "cloudVmc",
+    "deployment_id": "60a7a591a4dd926376dcf0fb",
+    "EasyAviTagCategoryName": "EasyAvi",
+    "avi_endpoint": "1.1.1.1",
+    "vcenter": {
+      "dc": "SDDC-Datacenter",
+      "cluster": "Cluster-1",
+      "datastore": "WorkloadDatastore",
+      "resource_pool": "Cluster-1/Resources",
+    },
+    "serviceEngineGroup": [
+      {
+        "name": "Default-Group",
+        "numberOfSe": 1,
+        "disk_per_se": 25,
+        "vcpus_per_se": 2,
+        "cpu_reserve": true,
+        "memory_per_se": 2048,
+        "mem_reserve": true,
+        "extra_shared_config_memory": false,
+        "management_network": {
+          "name": "avi-mgmt",
+          "defaultGateway": "10.1.1.1/24",
+          "defaultGatewaySeGroup": true,
+          "ips": [
+            "10.1.1.11",
+            "",
+            "",
+            ""
+          ],
+          "dhcp": false
+        },
+        "data_networks": [
+          {
+            "name": "avi-vip",
+            "defaultGateway": "10.1.3.1/24",
+            "defaultGatewaySeGroup": true,
+            "ips": [
+              "10.1.3.11",
+              "",
+              "",
+              ""
+            ],
+            "dhcp": false
+          }
+        ]
+      }
+    ]
+  },
+  "vmc_vsphere_username": "cloudadmin@vmc.local",
+  "vmc_vsphere_password": "XXXXXX",
+  "vmc_vsphere_server": "XXXXXX",
+  "avi_username": "admin",
+  "avi_password": "XXXXXX"
+}
