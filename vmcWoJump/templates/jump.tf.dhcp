@@ -1,0 +1,44 @@
+data "template_file" "jumpbox_userdata" {
+  template = file("userdata/jump.userdata")
+  vars = {
+    pubkey        = file(var.jump.public_key_path)
+    username = var.jump.username
+  }
+}
+
+resource "vsphere_virtual_machine" "jump" {
+  name             = "EasyAvi-jump"
+  datastore_id     = data.vsphere_datastore.datastore.id
+  resource_pool_id = data.vsphere_resource_pool.pool.id
+  folder           = data.vsphere_folder.folderController.path
+  network_interface {
+                      network_id = data.vsphere_network.networkMgmt.id
+  }
+
+  num_cpus = var.jump.cpu
+  memory = var.jump.memory
+  wait_for_guest_net_timeout = var.jump.wait_for_guest_net_timeout
+  guest_id = "guestid-jump"
+
+  disk {
+    size             = var.jump.disk
+    label            = "jump.lab_vmdk"
+    thin_provisioned = true
+  }
+
+  cdrom {
+    client_device = true
+  }
+
+  clone {
+    template_uuid = vsphere_content_library_item.ubuntu.id
+  }
+
+  vapp {
+    properties = {
+     hostname    = "EasyAvi-jump"
+     public-keys = file(var.jump.public_key_path)
+     user-data   = base64encode(data.template_file.jumpbox_userdata.rendered)
+    }
+  }
+}

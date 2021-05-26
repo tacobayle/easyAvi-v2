@@ -1,0 +1,120 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+  vars_files:
+    - "vars/params.yml"
+
+  roles:
+    - role: "avinetworks.avisdk"
+
+  tasks:
+
+    - name: Set variable avi_credentials
+      set_fact:
+        avi_credentials: >
+                          {'api_version': "{{ avi_version }}",
+                           'controller': "{{ controllerPrivateIps.0 }}",
+                           'password': "{{ avi_password }}",
+                           'username': "{{ avi_username }}"}
+      tags:
+        - creds
+      when:
+        - avi_version is defined
+        - controllerPrivateIps is defined
+        - avi_password is defined
+        - avi_username is defined
+
+    - name: Update user admin password
+      avi_useraccount:
+        controller: "{{ avi_credentials.controller }}"
+        username: "{{ avi_credentials.username }}"
+        password: "{{ avi_credentials.password }}"
+        old_password: 58NFaGDJm(PJH0G
+        api_version: "{{ avi_credentials.api_version }}"
+      ignore_errors: yes
+      tags:
+        - creds
+      when:
+        - controller.environment != "AWS"
+
+    - name: Get main Cluster Information
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: get
+        path: cluster
+      register: clusterInfo
+      tags:
+        - cluster
+
+    - name: Set fact cluster_uuid
+      set_fact:
+        cluster_uuid: "{{ clusterInfo['obj'].uuid }}"
+      when:
+        - clusterInfo['obj'].uuid is defined
+
+    - name: Configure Cluster object without ClusterIP - if cluster has been configured
+      avi_cluster:
+        avi_credentials: "{{ avi_credentials }}"
+        api_version: "{{ avi_credentials.api_version }}"
+        nodes:
+          - name: "{{ controllerPrivateIps.0 }}"
+            ip:
+              type: V4
+              addr: "{{ controllerPrivateIps.0 }}"
+          - name: "{{ controllerPrivateIps.1 }}"
+            ip:
+              type: V4
+              addr: "{{ controllerPrivateIps.1 }}"
+          - name: "{{ controllerPrivateIps.2 }}"
+            ip:
+              type: V4
+              addr: "{{ controllerPrivateIps.2 }}"
+        name: cluster-0-1
+        uuid: "{{ cluster_uuid }}"
+      when:
+        - controller.cluster is true
+        - controller.floating_ip is false
+        - controller.environment == "VMWARE"
+        - cluster_uuid is defined
+      tags:
+        - cluster
+
+    - name: Configure Cluster object with ClusterIP - if cluster has been configured
+      avi_cluster:
+        avi_credentials: "{{ avi_credentials }}"
+        api_version: "{{ avi_credentials.api_version }}"
+        nodes:
+            - name: "{{ controllerPrivateIps.0 }}"
+              ip:
+                type: V4
+                addr: "{{ controllerPrivateIps.0 }}"
+            - name: "{{ controllerPrivateIps.1 }}"
+              ip:
+                type: V4
+                addr: "{{ controllerPrivateIps.1 }}"
+            - name: "{{ controllerPrivateIps.2 }}"
+              ip:
+                type: V4
+                addr: "{{ controllerPrivateIps.2 }}"
+        name: cluster-0-1
+        uuid: "{{ cluster_uuid }}"
+        virtual_ip:
+            addr: "{{ controllerFloatingIp }}"
+            type: V4
+      when:
+        - controller.cluster is true
+        - controller.floating_ip is true
+        - controller.environment == "VMWARE"
+        - controllerFloatingIp is defined
+        - cluster_uuid is defined
+      tags:
+        - cluster
+
+#    - name: sleep for 540 seconds and continue with play - if cluster has been configured
+#      wait_for: timeout=540
+#      when:
+#        - controller.cluster is true
+#        - controller.environment == "VMWARE"
+#      tags:
+#        - cluster

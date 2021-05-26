@@ -1,0 +1,23 @@
+#cloud-config
+users:
+  - name: ${username}
+    lock_passwd: true
+    shell: /bin/bash
+    sudo:  ALL=(ALL) NOPASSWD:ALL
+    chpasswd: {expire: False}
+    ssh_authorized_keys:
+      - ${pubkey}
+
+write_files:
+  - content: |
+      #!/bin/bash
+      echo "cloud init done" | tee /tmp/cloudInitDone.log
+    path: /opt/bootstrap.sh
+    permissions: 0755
+
+  - content: |
+      ${username} ALL=(ALL) NOPASSWD:ALL
+    path: /etc/sudoers.d/${username}
+
+runcmd:
+  - /opt/bootstrap.sh
