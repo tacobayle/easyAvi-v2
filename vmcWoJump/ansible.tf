@@ -47,7 +47,7 @@ resource "null_resource" "ansible_avi_se" {
   depends_on = [null_resource.ansible_avi_cloud]
 
   provisioner "local-exec" {
-    command = "export ANSIBLE_NOCOLOR=True ; export ANSIBLE_HOST_KEY_CHECKING=False; ansible/ansible-playbook pbSe.yml --extra-vars '{\"vsphere_server\": ${jsonencode(var.vmc_vsphere_server)}, \"avi_version\": ${jsonencode(split(".ova", split("-", basename(var.no_access_vcenter.aviOva))[1])[0])}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"vsphere_password\": ${jsonencode(var.vmc_vsphere_password)}, \"controller\": ${jsonencode(var.no_access_vcenter.controller)}, \"vsphere_username\": ${jsonencode(var.vmc_vsphere_username)}, \"no_access_vcenter\": ${jsonencode(var.no_access_vcenter)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}}'"
+    command = "export ANSIBLE_NOCOLOR=True ; export ANSIBLE_HOST_KEY_CHECKING=False; ansible-playbook ansible/pbSe.yml --extra-vars '{\"vsphere_server\": ${jsonencode(var.vmc_vsphere_server)}, \"avi_version\": ${jsonencode(split(".ova", split("-", basename(var.no_access_vcenter.aviOva))[1])[0])}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"vsphere_password\": ${jsonencode(var.vmc_vsphere_password)}, \"controller\": ${jsonencode(var.no_access_vcenter.controller)}, \"vsphere_username\": ${jsonencode(var.vmc_vsphere_username)}, \"no_access_vcenter\": ${jsonencode(var.no_access_vcenter)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}}'"
   }
 
 }
