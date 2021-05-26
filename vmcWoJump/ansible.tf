@@ -11,7 +11,7 @@ resource "null_resource" "ansible_avi_cluster_1" {
   depends_on = [null_resource.wait_https_controllers]
 
   provisioner "local-exec" {
-    command = "cd ansible ; export ANSIBLE_NOCOLOR=True ; /home/ubuntu/.local/bin/ansible-playbook pbInitCluster.yml --extra-vars '{\"avi_version\": ${jsonencode(split(".ova", split("-", basename(var.no_access_vcenter.aviOva))[1])[0])}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"controller\": ${jsonencode(var.no_access_vcenter.controller)}, \"controllerFloatingIp\": ${jsonencode(var.no_access_vcenter.network_management.avi_ctrl_floating_ip)}, \"controllerDefaultGateway\": ${jsonencode(var.no_access_vcenter.network_management.defaultGateway)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}}'"
+    command = "export ANSIBLE_NOCOLOR=True ; ansible-playbook ansible/pbInitCluster.yml --extra-vars '{\"avi_version\": ${jsonencode(split(".ova", split("-", basename(var.no_access_vcenter.aviOva))[1])[0])}, \"controllerPrivateIps\": ${jsonencode(vsphere_virtual_machine.controller.*.default_ip_address)}, \"controller\": ${jsonencode(var.no_access_vcenter.controller)}, \"controllerFloatingIp\": ${jsonencode(var.no_access_vcenter.network_management.avi_ctrl_floating_ip)}, \"controllerDefaultGateway\": ${jsonencode(var.no_access_vcenter.network_management.defaultGateway)}, \"avi_username\": ${jsonencode(var.avi_username)}, \"avi_password\": ${jsonencode(var.avi_password)}}'"
   }
 }
 
