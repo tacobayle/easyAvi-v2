@@ -8,7 +8,7 @@ resource "null_resource" "vms" {
 }
 
 resource "null_resource" "nsxt" {
-  depends_on = [nsxt_policy_group.se, null_resource.se_exclusion_list, nsxt_policy_group.terraform]
+  depends_on = [nsxt_policy_group.se, null_resource.se_exclusion_list, nsxt_policy_group.easyavi_appliance]
 }
 
 resource "null_resource" "avi_controller" {
