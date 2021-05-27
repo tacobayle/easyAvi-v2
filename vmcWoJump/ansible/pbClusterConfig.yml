@@ -44,7 +44,7 @@
 
     - name: "Wait for Controller to be up..."
       uri:
-        url: '{{ "https://" + controllerPrivateIps.0 + "/api/cluster/runtime" }}'
+        url: '{{ "https://" + avi_credentials.controller + "/api/cluster/runtime" }}'
         return_content: "yes"
         validate_certs: "no"
       delegate_to: "localhost"
