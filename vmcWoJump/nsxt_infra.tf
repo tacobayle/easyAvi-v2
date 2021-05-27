@@ -121,7 +121,7 @@ resource "nsxt_policy_nat_rule" "dnat_controller_admin" {
   display_name         = "EasyAvi-dnat-controller-admin"
   action               = "DNAT"
   source_networks      = []
-  destination_networks = [vmc_public_ip.public_ip_controller[0].ip]
+  destination_networks = [vmc_public_ip.public_ip_controller_admin[0].ip]
   translated_networks  = [vsphere_virtual_machine.controller[0].default_ip_address]
   gateway_path         = "/infra/tier-1s/cgw"
   logging              = false
