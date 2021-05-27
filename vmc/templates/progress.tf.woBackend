@@ -4,11 +4,11 @@ resource "null_resource" "content_library" {
 }
 
 resource "null_resource" "vms" {
-  depends_on = [vsphere_virtual_machine.controller, vsphere_virtual_machine.jump, vsphere_tag.EasyAvi]
+  depends_on = [vsphere_virtual_machine.controller, vsphere_tag.EasyAvi]
 }
 
 resource "null_resource" "nsxt" {
-  depends_on = [nsxt_policy_nat_rule.dnat_jump, nsxt_policy_group.se, null_resource.se_exclusion_list, nsxt_policy_group.terraform, nsxt_policy_group.jump, null_resource.cgw_jump_create]
+  depends_on = [nsxt_policy_group.se, null_resource.se_exclusion_list, nsxt_policy_group.easyavi_appliance]
 }
 
 resource "null_resource" "avi_controller" {

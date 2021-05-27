@@ -116,19 +116,19 @@ resource "null_resource" "cgw_controller_https_create" {
   }
 }
 
-resource "nsxt_policy_nat_rule" "dnat_controller_admin" {
+resource "nsxt_policy_nat_rule" "dnat_jump" {
   count = (var.EasyAviInSDDC == true ? 0 : 1)
-  display_name         = "EasyAvi-dnat-controller-admin"
+  display_name         = "EasyAvi-dnat-jump"
   action               = "DNAT"
   source_networks      = []
-  destination_networks = [vmc_public_ip.public_ip_controller_admin[0].ip]
-  translated_networks  = [vsphere_virtual_machine.controller[0].default_ip_address]
+  destination_networks = [vmc_public_ip.public_ip_jump[0].ip]
+  translated_networks  = [vsphere_virtual_machine.jump.default_ip_address]
   gateway_path         = "/infra/tier-1s/cgw"
   logging              = false
   firewall_match       = "MATCH_INTERNAL_ADDRESS"
 }
 
-resource "nsxt_policy_group" "easyavi_appliance" {
+resource "nsxt_policy_group" "terraform" {
   count = (var.EasyAviInSDDC == true ? 0 : 1)
   display_name = "EasyAvi-Appliance"
   domain       = "cgw"
@@ -140,28 +140,21 @@ resource "nsxt_policy_group" "easyavi_appliance" {
   }
 }
 
-resource "nsxt_policy_group" "controller_admin" {
+resource "nsxt_policy_group" "jump" {
   count = (var.EasyAviInSDDC == true ? 0 : 1)
-  display_name = "controller_admin"
+  display_name = "EasyAvi-jump"
   domain       = "cgw"
-  description  = "controller_admin"
+  description  = "EasyAvi-jump"
   criteria {
     ipaddress_expression {
-      ip_addresses = [vsphere_virtual_machine.controller[0].default_ip_address, vmc_public_ip.public_ip_controller_admin[0].ip]
+      ip_addresses = [vmc_public_ip.public_ip_jump[0].ip, vsphere_virtual_machine.jump.default_ip_address]
     }
   }
 }
 
-resource "null_resource" "cgw_controller_admin_https" {
+resource "null_resource" "cgw_jump_create" {
   count = (var.EasyAviInSDDC == true ? 0 : 1)
   provisioner "local-exec" {
-    command = "python3 python/pyVMC.py ${var.vmc_nsx_token} ${var.vmc_org_id} ${var.vmc_sddc_id} new-cgw-rule easyavi_inbound_controller_admin_https ${nsxt_policy_group.easyavi_appliance[0].id} ${nsxt_policy_group.controller_admin[0].id} HTTPS ALLOW public 0"
-  }
-}
-
-resource "null_resource" "cgw_controller_admin_ssh" {
-  count = (var.EasyAviInSDDC == true ? 0 : 1)
-  provisioner "local-exec" {
-    command = "python3 python/pyVMC.py ${var.vmc_nsx_token} ${var.vmc_org_id} ${var.vmc_sddc_id} new-cgw-rule easyavi_inbound_controller_admin_ssh ${nsxt_policy_group.easyavi_appliance[0].id} ${nsxt_policy_group.controller_admin[0].id} SSH ALLOW public 0"
+    command = "python3 python/pyVMC.py ${var.vmc_nsx_token} ${var.vmc_org_id} ${var.vmc_sddc_id} new-cgw-rule easyavi_inbound_jump ${nsxt_policy_group.terraform[0].id} ${nsxt_policy_group.jump[0].id} SSH ALLOW public 0"
   }
 }

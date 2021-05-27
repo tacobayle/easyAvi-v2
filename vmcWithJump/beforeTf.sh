@@ -105,11 +105,11 @@ do
         beforeTfError=1
       fi
   fi
-#  if [[ $(basename $vm) == "EasyAvi-jump" ]]
-#  then
-#    echo "ERROR: There is a VM called $(basename $vm) which will conflict with this deployment - please remove it before trying another attempt"
-#    beforeTfError=1
-#  fi
+  if [[ $(basename $vm) == "EasyAvi-jump" ]]
+  then
+    echo "ERROR: There is a VM called $(basename $vm) which will conflict with this deployment - please remove it before trying another attempt"
+    beforeTfError=1
+  fi
   if [[ $(basename $vm) == $(basename $(cat sddc.json | jq -r .no_access_vcenter.aviOva) .ova)-* ]]
   then
     echo "ERROR: There is a VM called $(basename $vm) which will conflict with this deployment - please remove it before trying another attempt"
@@ -153,12 +153,12 @@ echo "Preparing TF files"
 if [[ $(cat sddc.json | jq -c -r .no_access_vcenter.network_management.dhcp) == true ]]
 then
   mv templates/controller.tf.dhcp controller.tf
-#  mv templates/jump.tf.dhcp jump.tf
-#  mv templates/jump.userdata.dhcp userdata/jump.userdata
+  mv templates/jump.tf.dhcp jump.tf
+  mv templates/jump.userdata.dhcp userdata/jump.userdata
 else
   mv templates/controller.tf.static controller.tf
-#  mv templates/jump.tf.static jump.tf
-#  mv templates/jump.userdata.static userdata/jump.userdata
+  mv templates/jump.tf.static jump.tf
+  mv templates/jump.userdata.static userdata/jump.userdata
 fi
 if [[ $(cat sddc.json | jq -c -r .no_access_vcenter.network_backend.dhcp) == true ]]
 then
@@ -182,7 +182,7 @@ else
 fi
 if [[ $(python3 python/EasyAviInSDDC.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) | jq -c -r .EasyAviInSDDC) == true ]]
 then
-  mv templates/ansible_private.tf ansible.tf
+  mv templates/ansible.tf.jump_private ansible.tf
 else
-  mv templates/ansible_public.tf ansible.tf
+  mv templates/ansible.tf.jump_public ansible.tf
 fi

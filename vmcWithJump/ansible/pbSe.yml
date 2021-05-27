@@ -21,23 +21,6 @@
         - controllerPrivateIps is defined
         - avi_password is defined
         - avi_username is defined
-        - EasyAviInSDDC
-
-    - name: Set variable avi_credentials
-      set_fact:
-        avi_credentials: >
-          {'api_version': "{{ avi_version }}",
-           'controller': "{{ public_ip_controller }}",
-           'password': "{{ avi_password }}",
-           'username': "{{ avi_username }}"}
-      tags:
-        - creds
-      when:
-        - avi_version is defined
-        - controllerPrivateIps is defined
-        - avi_password is defined
-        - avi_username is defined
-        - not EasyAviInSDDC
 
     - name: Define ova path (in localhost variable)
       set_fact:
@@ -80,7 +63,7 @@
         - ova_path is defined
 
     - name: Run a playbook against SE group (SE Creation and SE Group Assignement) - this takes several minutes
-      command: python3 python/seCreationVmware2.py "{{ avi_credentials | to_yaml }}" "{{ item | to_yaml }}" "{{ cloud_no_access_vcenter_uuid }}" "{{ no_access_vcenter.vcenter | to_yaml }}" "{{ vsphere_username }}" "{{ vsphere_password }}" "{{ vsphere_server }}" "Easy-Avi-CL-SE-NoAccess" "{{ no_access_vcenter.deployment_id }}" "{{ controllerPrivateIps.0 }}"
+      command: python3 python/seCreationVmware2.py "{{ avi_credentials | to_yaml }}" "{{ item | to_yaml }}" "{{ cloud_no_access_vcenter_uuid }}" "{{ no_access_vcenter.vcenter | to_yaml }}" "{{ vsphere_username }}" "{{ vsphere_password }}" "{{ vsphere_server }}" "Easy-Avi-CL-SE-NoAccess" "{{ no_access_vcenter.deployment_id }}"
       register: logPbSeCreation
       loop: "{{ no_access_vcenter.serviceEngineGroup }}"
       ignore_errors: yes

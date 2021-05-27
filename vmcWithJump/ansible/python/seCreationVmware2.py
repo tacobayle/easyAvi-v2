@@ -34,7 +34,6 @@ if __name__ == '__main__':
   seg_folder = 'Avi-SE-' + seg['name']
   cl_name = sys.argv[8]
   deployment_id = sys.argv[9]
-  controller_private_ip = sys.argv[10]
   tenant = "admin"
   vsphere_url="https://" + vsphere_username + ":" + vsphere_password + "@" + vsphere_server
   defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], tenant)
@@ -116,7 +115,7 @@ if __name__ == '__main__':
       properties['PropertyMapping'] = [
                                         {
                                           'Key': 'AVICNTRL',
-                                          'Value': controller_private_ip
+                                          'Value': avi_credentials['controller']
                                         },
                                         {
                                           'Key': 'AVISETYPE',
@@ -155,7 +154,7 @@ if __name__ == '__main__':
       properties['PropertyMapping'] = [
                                         {
                                           'Key': 'AVICNTRL',
-                                          'Value': controller_private_ip
+                                          'Value': avi_credentials['controller']
                                         },
                                         {
                                           'Key': 'AVISETYPE',

@@ -1,14 +1,14 @@
 
 resource "null_resource" "content_library" {
-  depends_on = [vsphere_content_library.library, vsphere_content_library_item.avi, vsphere_content_library_item.ubuntu, vsphere_content_library_item.ubuntu_backend]
+  depends_on = [vsphere_content_library.library, vsphere_content_library_item.avi, vsphere_content_library_item.ubuntu]
 }
 
 resource "null_resource" "vms" {
-  depends_on = [vsphere_virtual_machine.controller, vsphere_virtual_machine.backend, vsphere_tag.EasyAvi]
+  depends_on = [vsphere_virtual_machine.controller, vsphere_virtual_machine.jump, vsphere_tag.EasyAvi]
 }
 
 resource "null_resource" "nsxt" {
-  depends_on = [nsxt_policy_group.se, null_resource.se_exclusion_list, nsxt_policy_group.easyavi_appliance]
+  depends_on = [nsxt_policy_nat_rule.dnat_jump, nsxt_policy_group.se, null_resource.se_exclusion_list, nsxt_policy_group.terraform, nsxt_policy_group.jump, null_resource.cgw_jump_create]
 }
 
 resource "null_resource" "avi_controller" {
