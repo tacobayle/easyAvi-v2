@@ -147,7 +147,7 @@ resource "nsxt_policy_group" "controller_admin" {
   description  = "controller_admin"
   criteria {
     ipaddress_expression {
-      ip_addresses = [vsphere_virtual_machine.controller[0].default_ip_address, vmc_public_ip.public_ip_controller[0].ip]
+      ip_addresses = [vsphere_virtual_machine.controller[0].default_ip_address, vmc_public_ip.public_ip_controller_admin[0].ip]
     }
   }
 }

@@ -11,7 +11,7 @@ resource "vmc_public_ip" "public_ip_controller" {
 //  display_name = "jump"
 //}
 
-resource "vmc_public_ip" "public_ip_controller" {
+resource "vmc_public_ip" "public_ip_controller_admin" {
   count = (var.EasyAviInSDDC == true ? 0 : 1)
   nsxt_reverse_proxy_url = var.vmc_nsx_server
   display_name = "controller-admin-public-ip"
