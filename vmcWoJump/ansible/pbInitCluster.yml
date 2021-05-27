@@ -24,6 +24,23 @@
         - controllerPrivateIps is defined
         - avi_password is defined
         - avi_username is defined
+        - EasyAviInSDDC
+
+    - name: Set variable avi_credentials
+      set_fact:
+        avi_credentials: >
+          {'api_version': "{{ avi_version }}",
+           'controller': "{{ public_ip_controller }}",
+           'password': "{{ avi_password }}",
+           'username': "{{ avi_username }}"}
+      tags:
+        - creds
+      when:
+        - avi_version is defined
+        - controllerPrivateIps is defined
+        - avi_password is defined
+        - avi_username is defined
+        - not EasyAviInSDDC
 
     - name: Update user admin password
       avi_useraccount:
