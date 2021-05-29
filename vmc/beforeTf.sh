@@ -6,6 +6,13 @@ else
   credsFile="sddc.json"
 fi
 #
+# Cleaning /root/.ssh/known_hosts
+#
+echo ""
+echo "++++++++++++++++++++++++++++++++"
+echo "Cleaning /root/.ssh/known_hosts"
+rm -f /root/.ssh/known_hosts
+#
 # Retrieve Public IP
 #
 echo ""
