@@ -23,17 +23,17 @@ IFS=$'\n'
 echo ""
 echo "++++++++++++++++++++++++++++++++"
 echo "Checking for Tag conflict name..."
-tag=0
+tag_status=0
 for tag in $(govc tags.category.ls)
 do
   if [[ $tag == $(cat se_vmc.json | jq -r .no_access_vcenter.EasyAviTagCategoryName) ]]
     then
         echo "Category tag already exists"
         mv templates/ansible_without_tag.tf ansible.tf
-        tag=1
+        tag_status=1
   fi
 done
-if [[ $tag -eq 0 ]]
+if [[ $tag_status -eq 0 ]]
   then
     echo "Category tag does not exist - it will be created by TF"
     mv templates/vsphere_infrastructure.tf vsphere_infrastructure.tf
