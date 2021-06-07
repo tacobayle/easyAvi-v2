@@ -6,5 +6,7 @@ variable "vmc_vsphere_server" {}
 variable "no_access_vcenter" {}
 variable "vmc_sddc_id" {}
 variable "vmc_org_id" {}
-variable "vmc_nsx_token" {}
+variable "vmc_nsx_token" {
+  sensitive = true
+}
 variable "vmc_nsx_server" {}
