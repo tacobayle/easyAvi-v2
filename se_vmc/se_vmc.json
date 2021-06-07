@@ -3,6 +3,7 @@
     "name": "cloudVmc",
     "deployment_id": "60a7a591a4dd926376dcf0fb",
     "EasyAviTagCategoryName": "EasyAvi",
+    "EasyAviSeExclusionList": "EasyAviSeExclusionList",
     "avi_endpoint": "1.1.1.1",
     "vcenter": {
       "dc": "SDDC-Datacenter",
@@ -52,6 +53,9 @@
   "vmc_vsphere_username": "cloudadmin@vmc.local",
   "vmc_vsphere_password": "XXXXXX",
   "vmc_vsphere_server": "XXXXXX",
+  "vmc_sddc_id": "XXXXXX",
+  "vmc_org_id": "XXXXXX",
+  "vmc_nsx_token": "XXXXXX",
   "avi_username": "admin",
   "avi_password": "XXXXXX"
 }
