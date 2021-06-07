@@ -74,7 +74,7 @@ echo ""
 echo "++++++++++++++++++++++++++++++++"
 echo "Checking for NSX Exclusion list..."
 nsx_exclusion_list_status=$(python3 python/pyVMCCheckExclusionList.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) check-exclude-list $(cat $credsFile | jq -r .no_access_vcenter.EasyAviSeExclusionList))
-if [ $(echo $nsx_exclusion_list_status | jq -r .exclusion_list) == false ]
+if [ $(echo $nsx_exclusion_list_status | jq -r .exclusion_list) = false ]
 then
   echo "NSX Exclusion list will be updated by TF"
   mv templates/nsxt.tf nsxt.tf
