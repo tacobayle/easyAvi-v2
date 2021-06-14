@@ -39,6 +39,20 @@ do
   fi
 done
 #
+# Cleaning vCenter tags (only for imported deployment)
+#
+if [ -f "se_vmc/se_vmc.json" ] && [ ! -f "sddc.json" ]
+then
+  echo ""
+  echo "++++++++++++++++++++++++++++++++"
+  echo "destroying tag..."
+  govc tags.rm $(cat se_vmc/se_vmc.json | jq -r .no_access_vcenter.deployment_id) > /dev/null 2>&1 || true
+  echo ""
+  echo "++++++++++++++++++++++++++++++++"
+  echo "destroying category tag..."
+  govc govc tags.category.rm $(cat se_vmc/se_vmc.json | jq -r .no_access_vcenter.EasyAviTagCategoryName) > /dev/null 2>&1 || true
+fi
+#
 # Removing NSX-T config
 #
 echo ""
@@ -63,7 +77,13 @@ if [ -f "data.json" ]; then
   echo ""
   echo "TF destroy..."
   terraform destroy -auto-approve -var-file=sddc.json -var-file=ip.json -var-file=data.json -var-file=EasyAviLocation.json -no-color
-else
+fi
+if [ -f "sddc.json" ]; then
+  terraform state rm vsphere_content_library.library > /dev/null 2>&1 || true
+  terraform state rm vsphere_content_library.avi > /dev/null 2>&1 || true
+  terraform state rm vsphere_content_library_item.avi > /dev/null 2>&1 || true
+  terraform state rm vsphere_content_library_item.ubuntu > /dev/null 2>&1 || true
+  terraform state rm vsphere_content_library_item.ubuntu_backend[0] > /dev/null 2>&1 || true
   echo ""
   echo "TF refresh..."
   terraform refresh -var-file=sddc.json -var-file=ip.json -var-file=EasyAviLocation.json -no-color
