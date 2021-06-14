@@ -89,6 +89,7 @@
           {'controller': "{{ no_access_vcenter.avi_endpoint }}",
            'password': "{{ avi_password }}",
            'username': "{{ avi_username }}",
+           'tenant': "{{ avi_tenant }}",
            'api_version': "{{ se_master_ctl_version }}"}
       tags:
         - creds
