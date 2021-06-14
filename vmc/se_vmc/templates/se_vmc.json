@@ -56,6 +56,7 @@
   "vmc_sddc_id": "XXXXXX",
   "vmc_org_id": "XXXXXX",
   "vmc_nsx_token": "XXXXXX",
+  "vmc_nsx_server": "XXXXXX",
   "avi_username": "admin",
   "avi_password": "XXXXXX"
 }

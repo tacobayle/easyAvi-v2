@@ -73,6 +73,7 @@ proxy = getNSXTproxy(ORG_ID, SDDC_ID, session_token)
 
 if intent_name == "check-exclude-list":
     cgw_groups = getSDDCGroups(proxy, session_token, "cgw")
+    group_easyavi_path = ""
     for group in cgw_groups:
       if group['display_name'] == sys.argv[5]:
         group_easyavi_path = group['path']
