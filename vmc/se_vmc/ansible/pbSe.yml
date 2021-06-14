@@ -12,6 +12,7 @@
         avi_credentials: >
           {'controller': "{{ no_access_vcenter.avi_endpoint }}",
            'password': "{{ avi_password }}",
+           'tenant': "{{ avi_tenant }}",
            'username': "{{ avi_username }}"}
       tags:
         - creds

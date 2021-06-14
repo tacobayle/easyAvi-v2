@@ -1,5 +1,6 @@
 variable "avi_password" {}
 variable "avi_username" {}
+variable "avi_tenant" {}
 variable "vmc_vsphere_username" {}
 variable "vmc_vsphere_password" {}
 variable "vmc_vsphere_server" {}

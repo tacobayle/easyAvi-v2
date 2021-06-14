@@ -58,5 +58,6 @@
   "vmc_nsx_token": "XXXXXX",
   "vmc_nsx_server": "XXXXXX",
   "avi_username": "admin",
+  "avi_tennt": "XXXXXX",
   "avi_password": "XXXXXX"
 }

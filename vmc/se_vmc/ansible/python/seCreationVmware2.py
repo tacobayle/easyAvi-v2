@@ -34,9 +34,9 @@ if __name__ == '__main__':
   seg_folder = 'Avi-SE-' + seg['name']
   cl_name = sys.argv[8]
   deployment_id = sys.argv[9]
-  tenant = "admin"
+#   tenant = "admin"
   vsphere_url="https://" + vsphere_username + ":" + vsphere_password + "@" + vsphere_server
-  defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], tenant)
+  defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], avi_credentials['tenant'])
   cluster_uuid = defineClass.getObject('cluster', '')['uuid']
   if seg['numberOfSe'] == 0:
     print('no SE to create')
