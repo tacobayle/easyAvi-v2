@@ -19,6 +19,22 @@ export GOVC_DATASTORE=$(cat se_vmc.json | jq -r .no_access_vcenter.vcenter.datas
 #
 echo ""
 echo "++++++++++++++++++++++++++++++++"
+echo "Removing old tf state file..."
+rm -f terraform.tfstate
+#
+#
+#
+echo ""
+echo "++++++++++++++++++++++++++++++++"
+echo "Cleaning tf file(s)..."
+rm -f vsphere_infrastructure.tf
+rm -f ansible.tf
+rm -f nsxt.tf
+#
+#
+#
+echo ""
+echo "++++++++++++++++++++++++++++++++"
 echo "Checking for vCenter Connectivity..."
 govc find / -type m > /dev/null 2>&1
 status=$?
@@ -45,13 +61,13 @@ done
 if [[ $tag_status -eq 0 ]]
   then
     echo "Category tag does not exist - it will be created by TF"
-    mv templates/vsphere_infrastructure.tf vsphere_infrastructure.tf
-    mv templates/ansible_with_tag.tf ansible.tf
+    cp templates/vsphere_infrastructure.tf vsphere_infrastructure.tf
+    cp templates/ansible_with_tag.tf ansible.tf
 fi
 if [[ $tag_status -eq 1 ]]
   then
     echo "Category tag exists"
-    mv templates/ansible_without_tag.tf ansible.tf
+    cp templates/ansible_without_tag.tf ansible.tf
 fi
 #
 #
@@ -77,7 +93,7 @@ nsx_exclusion_list_status=$(python3 python/pyVMCCheckExclusionList.py $(cat $cre
 if [ $(echo $nsx_exclusion_list_status | jq -r .exclusion_list) = false ]
 then
   echo "NSX Exclusion list will be updated by TF"
-  mv templates/nsxt.tf nsxt.tf
+  cp templates/nsxt.tf nsxt.tf
 fi
 #
 #
