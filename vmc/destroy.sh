@@ -4,10 +4,16 @@ if [ -f "data.json" ]; then
 else
   credsFile="sddc.json"
 fi
-export GOVC_DATACENTER=$(cat sddc.json | jq -r .no_access_vcenter.vcenter.dc)
+if [ -f "se_vmc/se_vmc.json" ]; then
+  jsonFile="se_vmc/se_vmc.json"
+fi
+if [ -f "sddc.json" ]; then
+  jsonFile="sddc.json"
+fi
+export GOVC_DATACENTER=$(cat $jsonFile | jq -r .no_access_vcenter.vcenter.dc)
 export GOVC_URL=$(cat $credsFile | jq -r .vmc_vsphere_username):$(cat $credsFile | jq -r .vmc_vsphere_password)@$(cat $credsFile | jq -r .vmc_vsphere_server)
 export GOVC_INSECURE=true
-export GOVC_DATASTORE=$(cat sddc.json | jq -r .no_access_vcenter.vcenter.datastore)
+export GOVC_DATASTORE=$(cat $jsonFile | jq -r .no_access_vcenter.vcenter.datastore)
 echo ""
 echo "++++++++++++++++++++++++++++++++"
 echo "Checking for vCenter Connectivity..."
@@ -25,12 +31,12 @@ echo ""
 echo "++++++++++++++++++++++++++++++++"
 echo "destroying SE Content Libraries..."
 govc library.rm Easy-Avi-CL-SE-NoAccess > /dev/null 2>&1 || true
-govc library.rm $(cat sddc.json | jq -r .no_access_vcenter.cl_avi_name) > /dev/null 2>&1 || true
+govc library.rm $(cat $jsonFile | jq -r .no_access_vcenter.cl_avi_name) > /dev/null 2>&1 || true
 IFS=$'\n'
 echo ""
 echo "++++++++++++++++++++++++++++++++"
 echo "destroying VM matching deployment tag and EasyAvi-se-* as a name..."
-for vm in $(govc tags.attached.ls $(cat sddc.json | jq -r .no_access_vcenter.deployment_id) | xargs govc ls -L)
+for vm in $(govc tags.attached.ls $(cat $jsonFile | jq -r .no_access_vcenter.deployment_id) | xargs govc ls -L)
 do
   if [[ $(basename $vm) == EasyAvi-se-* ]]
   then
@@ -61,22 +67,22 @@ echo "removing CGW rules"
 python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-easyavi-rules easyavi_
 echo ""
 echo "++++++++++++++++++++++++++++++++"
-echo "removing $(cat sddc.json | jq -r .no_access_vcenter.EasyAviSeExclusionList) from exclusion list"
-python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-exclude-list $(cat sddc.json | jq -r .no_access_vcenter.EasyAviSeExclusionList)
+echo "removing $(cat $jsonFile | jq -r .no_access_vcenter.EasyAviSeExclusionList) from exclusion list"
+python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-exclude-list $(cat $jsonFile | jq -r .no_access_vcenter.EasyAviSeExclusionList)
 #echo ""
 #echo "++++++++++++++++++++++++++++++++"
-#echo "removing $(cat sddc.json | jq -r .no_access_vcenter.EasyAviControllerExclusionList) from exclusion list"
-#python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-exclude-list $(cat sddc.json | jq -r .no_access_vcenter.EasyAviControllerExclusionList)
+#echo "removing $(cat $jsonFile | jq -r .no_access_vcenter.EasyAviControllerExclusionList) from exclusion list"
+#python3 python/pyVMCDestroy.py $(cat $credsFile | jq -r .vmc_nsx_token) $(cat $credsFile | jq -r .vmc_org_id) $(cat $credsFile | jq -r .vmc_sddc_id) remove-exclude-list $(cat $jsonFile | jq -r .no_access_vcenter.EasyAviControllerExclusionList)
 #
 # TF Refresh, destroy.
 #
 if [ -f "data.json" ]; then
   echo ""
   echo "TF refresh..."
-  terraform refresh -var-file=sddc.json -var-file=ip.json -var-file=data.json -var-file=EasyAviLocation.json -no-color
+  terraform refresh -var-file=$jsonFile -var-file=ip.json -var-file=data.json -var-file=EasyAviLocation.json -no-color
   echo ""
   echo "TF destroy..."
-  terraform destroy -auto-approve -var-file=sddc.json -var-file=ip.json -var-file=data.json -var-file=EasyAviLocation.json -no-color
+  terraform destroy -auto-approve -var-file=$jsonFile -var-file=ip.json -var-file=data.json -var-file=EasyAviLocation.json -no-color
 fi
 if [ -f "sddc.json" ]; then
   terraform state rm vsphere_content_library.library > /dev/null 2>&1 || true
@@ -86,10 +92,10 @@ if [ -f "sddc.json" ]; then
   terraform state rm vsphere_content_library_item.ubuntu_backend[0] > /dev/null 2>&1 || true
   echo ""
   echo "TF refresh..."
-  terraform refresh -var-file=sddc.json -var-file=ip.json -var-file=EasyAviLocation.json -no-color
+  terraform refresh -var-file=$jsonFile -var-file=ip.json -var-file=EasyAviLocation.json -no-color
   echo ""
   echo "TF destroy..."
-  terraform destroy -auto-approve -var-file=sddc.json -var-file=ip.json -var-file=EasyAviLocation.json -no-color
+  terraform destroy -auto-approve -var-file=$jsonFile -var-file=ip.json -var-file=EasyAviLocation.json -no-color
 fi
 #echo ""
 #echo "Removing easyavi.ran"
