@@ -188,7 +188,7 @@ if __name__ == '__main__':
                                         },
                                         {
                                           'Key': 'avi.DNS.SE',
-                                          'Value': '8.8.8.8'
+                                          'Value': 'SERVERS:8.8.8.8,8.8.4.4'
                                         },
                                         {
                                           'Key': 'avi.sysadmin-public-key.SE',
