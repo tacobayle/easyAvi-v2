@@ -1,4 +1,4 @@
-import requests, json, os, yaml, sys, time, random, string
+import requests, json, os, yaml, sys, time, random, string, ipaddress, socket
 from avi.sdk.avi_api import ApiSession
 from ipaddress import IPv4Network
 from ipaddress import IPv4Interface
@@ -59,7 +59,7 @@ if __name__ == '__main__':
         if govc_result != 0:
 #           os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
           print('Error when browsing the data network to retrieve the PortgroupKey')
-          exit()
+          sys.exit(1)
         with open('network.json', 'r') as stream:
           network_info = json.load(stream)
         network['name'] = item['name']
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     if govc_result != 0:
 #       os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
       print('Error when retrieving inventory names of VM')
-      exit()
+      sys.exit(1)
     with open('vm_inventory.json', 'r') as vm_json:
       vm_inventory = json.load(vm_json)
     while True:
@@ -151,10 +151,15 @@ if __name__ == '__main__':
                                         }
                                       ]
     if seg['management_network']['dhcp'] == False:
+      try:
+        ipaddress.ip_address(avi_credentials['controller'])
+        avi_controller_ip = avi_credentials['controller']
+      except:
+        avi_controller_ip = socket.gethostbyname(avi_credentials['controller'])
       properties['PropertyMapping'] = [
                                         {
                                           'Key': 'AVICNTRL',
-                                          'Value': avi_credentials['controller']
+                                          'Value': avi_controller_ip
                                         },
                                         {
                                           'Key': 'AVISETYPE',
@@ -216,7 +221,7 @@ if __name__ == '__main__':
     if govc_result != 0:
     #       os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
       print('Error when creating the SE')
-      exit()
+      sys.exit(1)
     for network_data_index in range(len(seg['data_networks']) + 1, 10):
       print('dsconnecting ethernet-{0}'.format(network_data_index))
       govc_result = os.system('''export GOVC_DATACENTER={0}
@@ -229,7 +234,7 @@ if __name__ == '__main__':
       if govc_result != 0:
     #       os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
         print('Error when disconnecting ethernet-{0}'.format(network_data_index))
-        exit()
+        sys.exit(1)
     with open('ip.txt', 'r') as file:
       ip = file.read().replace('\n', '')
 #     print(ip)
@@ -263,14 +268,14 @@ if __name__ == '__main__':
         count += 1
         if count == 40:
           print('timeout for SE to be seen after deployment')
-          exit()
+          sys.exit(1)
       count = 0
       while defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['results'][0]['se_connected'] != True:
         time.sleep(5)
         count += 1
         if count == 40:
           print('timeout for SE to be connected after deployment')
-          exit()
+          sys.exit(1)
       params = {'name': ip}
       se_data = defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['results'][0]
       se_data['name'] = se_name
@@ -287,7 +292,7 @@ if __name__ == '__main__':
       if govc_result != 0:
 #         os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
         print('Error when discovering SE Hardware')
-        exit()
+        sys.exit(1)
       with open('vm_devices.json', 'r') as stream:
         vm_devices = json.load(stream)
       # link mac address to Network
@@ -327,7 +332,7 @@ if __name__ == '__main__':
       if count == 40:
         print('timeout for SE to be seen after seg update')
 #         os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
-        exit()
+        sys.exit(1)
     count = 0
     while defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['results'][0]['se_connected'] != True:
       time.sleep(5)
@@ -335,5 +340,5 @@ if __name__ == '__main__':
       if count == 40:
         print('timeout for SE to be connected after seg update')
 #         os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
-        exit()
+        sys.exit(1)
     seCount += 1
