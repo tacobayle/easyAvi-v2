@@ -15,7 +15,7 @@ class aviSession:
 
   def getObject(self, objectUrl, objectTenant, objectParams):
     api = ApiSession.get_session(self.fqdn, self.username, self.password, self.tenant)
-    result = api.get(objectUrl, params=objectParams)
+    result = api.get(objectUrl, tenant=objectTenant, params=objectParams)
     return result.json()
 
   def putObject(self, objectUrl, objectTenant, objectData):
@@ -37,7 +37,7 @@ if __name__ == '__main__':
 #   tenant = "admin"
   vsphere_url="https://" + vsphere_username + ":" + vsphere_password + "@" + vsphere_server
   defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], avi_credentials['tenant'])
-  cluster_uuid = defineClass.getObject('cluster', avi_credentials['tenant'], '')['uuid']
+  cluster_uuid = defineClass.getObject('cluster', 'admin', '')['uuid']
   if seg['numberOfSe'] == 0:
     print('no SE to create')
     exit()

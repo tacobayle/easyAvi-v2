@@ -60,7 +60,7 @@ then
   echo ""
   echo "++++++++++++++++++++++++++++++++"
   echo "destroying category tag..."
-  govc govc tags.category.rm $(cat se_vmc/se_vmc.json | jq -r .no_access_vcenter.EasyAviTagCategoryName) > /dev/null 2>&1 || true
+  govc tags.category.rm $(cat se_vmc/se_vmc.json | jq -r .no_access_vcenter.EasyAviTagCategoryName) > /dev/null 2>&1 || true
 fi
 #
 # Removing NSX-T config
