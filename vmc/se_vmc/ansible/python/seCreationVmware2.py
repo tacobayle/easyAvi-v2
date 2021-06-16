@@ -13,14 +13,14 @@ class aviSession:
   def debug(self):
     print("controller is {0}, username is {1}, password is {2}, tenant is {3}".format(self.fqdn, self.username, self.password, self.tenant))
 
-  def getObject(self, objectUrl, objectParams):
+  def getObject(self, objectUrl, objectTenant, objectParams):
     api = ApiSession.get_session(self.fqdn, self.username, self.password, self.tenant)
     result = api.get(objectUrl, params=objectParams)
     return result.json()
 
-  def putObject(self, objectUrl, objectData):
+  def putObject(self, objectUrl, objectTenant, objectData):
     api = ApiSession.get_session(self.fqdn, self.username, self.password, self.tenant)
-    result = api.put(objectUrl, data=objectData)
+    result = api.put(objectUrl, tenant=objectTenant, data=objectData)
     return result.json()
 
 if __name__ == '__main__':
@@ -37,7 +37,7 @@ if __name__ == '__main__':
 #   tenant = "admin"
   vsphere_url="https://" + vsphere_username + ":" + vsphere_password + "@" + vsphere_server
   defineClass = aviSession(avi_credentials['controller'], avi_credentials['username'], avi_credentials['password'], avi_credentials['tenant'])
-  cluster_uuid = defineClass.getObject('cluster', '')['uuid']
+  cluster_uuid = defineClass.getObject('cluster', avi_credentials['tenant'], '')['uuid']
   if seg['numberOfSe'] == 0:
     print('no SE to create')
     exit()
@@ -82,7 +82,7 @@ if __name__ == '__main__':
   seCount = 0
   for se in range (1, seg['numberOfSe'] + 1):
     params = {"cloud_uuid": cloud_no_access_vcenter_uuid}
-    auth_details = defineClass.getObject('securetoken-generate', params)
+    auth_details = defineClass.getObject('securetoken-generate', avi_credentials['tenant'], params)
     govc_result = os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc find -json / -type m | tee vm_inventory.json'.format(vcenter['dc'], vsphere_url))
     if govc_result != 0:
 #       os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
@@ -256,26 +256,26 @@ if __name__ == '__main__':
     # seg update name update and IP update if needed.
     #
     if seg['name'] != 'Default-Group' or any(network['dhcp'] == False for network in seg['data_networks']):
-      # to be tested
+      params = {'name': ip}
       count = 0
-      while defineClass.getObject('serviceengine', params)['count'] == 0:
+      while defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['count'] == 0:
         time.sleep(5)
         count += 1
         if count == 40:
           print('timeout for SE to be seen after deployment')
           exit()
       count = 0
-      while defineClass.getObject('serviceengine', params)['results'][0]['se_connected'] != True:
+      while defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['results'][0]['se_connected'] != True:
         time.sleep(5)
         count += 1
         if count == 40:
           print('timeout for SE to be connected after deployment')
           exit()
       params = {'name': ip}
-      se_data = defineClass.getObject('serviceengine', params)['results'][0]
+      se_data = defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['results'][0]
       se_data['name'] = se_name
       params = {'name': seg['name'], 'cloud_uuid': cloud_no_access_vcenter_uuid}
-      seg_uuid = defineClass.getObject('serviceenginegroup', params)['results'][0]['uuid']
+      seg_uuid = defineClass.getObject('serviceenginegroup', avi_credentials['tenant'], params)['results'][0]['uuid']
       se_data['se_group_ref'] = '/api/serviceenginegroup/' + seg_uuid
       # end of to be tested
     # discover VM device if DHCP is false for data networks
@@ -316,12 +316,12 @@ if __name__ == '__main__':
             se_data['data_vnics'][count_vnic]['vnic_networks'] = [{'ctrl_alloc': False, 'ip': {'ip_addr': {'addr': str(network['ips'][seCount]), 'type': 'V4'}, 'mask': network['defaultGateway'].split('/')[1]}, 'mode': 'STATIC'}]
             se_data['data_vnics'][count_vnic]['dhcp_enabled'] = False
     if any(network['dhcp'] == False for network in seg['data_networks']) or seg['name'] != 'Default-Group':
-      update_se = defineClass.putObject('serviceengine/' + se_data['uuid'], se_data)
+      update_se = defineClass.putObject('serviceengine/' + se_data['uuid'], avi_credentials['tenant'], se_data)
       time.sleep(60)
     se_connected = ''
     count = 0
     params = {'name': ip}
-    while defineClass.getObject('serviceengine', params)['count'] == 0:
+    while defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['count'] == 0:
       time.sleep(5)
       count += 1
       if count == 40:
@@ -329,7 +329,7 @@ if __name__ == '__main__':
 #         os.system('export GOVC_DATACENTER={0}; export GOVC_URL={1}; export GOVC_INSECURE=true; govc library.rm {2}'.format(vcenter['dc'], vsphere_url, cl_name))
         exit()
     count = 0
-    while defineClass.getObject('serviceengine', params)['results'][0]['se_connected'] != True:
+    while defineClass.getObject('serviceengine', avi_credentials['tenant'], params)['results'][0]['se_connected'] != True:
       time.sleep(5)
       count += 1
       if count == 40:

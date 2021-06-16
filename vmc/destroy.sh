@@ -1,7 +1,11 @@
 #!/bin/bash
 if [ -f "data.json" ]; then
   credsFile="data.json"
-else
+fi
+if [ -f "se_vmc/se_vmc.json" ]; then
+  credsFile="se_vmc/se_vmc.json"
+fi
+if [ -f "sddc.json" ]; then
   credsFile="sddc.json"
 fi
 if [ -f "se_vmc/se_vmc.json" ]; then
