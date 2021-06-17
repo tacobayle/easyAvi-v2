@@ -357,12 +357,12 @@
       tags:
         - serviceEngineGroup
 
-    - add_host:
-        hostname: avicontroller
-        ansible_host: "{{ avi_credentials.controller }}"
-        ansible_port: 22
-        ansible_user: "{{ avi_username }}"
-        ansible_ssh_pass: "{{ avi_password }}"
+#    - add_host:
+#        hostname: avicontroller
+#        ansible_host: "{{ avi_credentials.controller }}"
+#        ansible_port: 22
+#        ansible_user: "{{ avi_username }}"
+#        ansible_ssh_pass: "{{ avi_password }}"
 
     #### start of block
 
@@ -427,26 +427,36 @@
         timeout: 600
         data:
           file_format: ova
+          cloud_uuid: "{{ cloud_no_access_vcenter_uuid }}"
       delegate_to: localhost
       when:
         - no_access_vcenter.name is defined
 
-- hosts: avicontroller
-  gather_facts: yes
+#- hosts: avicontroller
+#  gather_facts: yes
+#
+#  tasks:
+#
+#    - set_fact:
+#        se_image_path: "{{ hostvars['localhost']['se_image_path'] }}"
+#
+#    - name: Download SE image
+#      fetch:
+#        src: "{{ se_image_path }}/se.ova"
+#        dest: ./
+#        flat: yes
+#        validate_checksum: False
+#
+#
+#    - name: Define ova path (in controller variable)
+#      set_fact:
+#        ova_path: "./se.ova"
 
-  tasks:
-
-    - set_fact:
-        se_image_path: "{{ hostvars['localhost']['se_image_path'] }}"
-
-    - name: Download SE image
-      fetch:
-        src: "{{ se_image_path }}/se.ova"
-        dest: ./
-        flat: yes
-        validate_checksum: False
-
-
-    - name: Define ova path (in controller variable)
-      set_fact:
-        ova_path: "./se.ova"
+    - name: Download se image from controller
+      avi_api_fileservice:
+        avi_credentials: "{{ avi_credentials | default(omit) }}"
+        api_context: "{{ avi_api_context | default(omit) }}"
+        tenant: "{{ avi_tenant }}"
+        upload: false
+        path: "seova?file_format=ova&cloud_uuid={{ cloud_no_access_vcenter_uuid }}"
+        file_path: ./se.ova
