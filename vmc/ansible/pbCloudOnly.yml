@@ -456,7 +456,6 @@
       avi_api_fileservice:
         avi_credentials: "{{ avi_credentials | default(omit) }}"
         api_context: "{{ avi_api_context | default(omit) }}"
-        tenant: "{{ avi_tenant }}"
         upload: false
         path: "seova?file_format=ova&cloud_uuid={{ cloud_no_access_vcenter_uuid }}"
         file_path: ./se.ova
